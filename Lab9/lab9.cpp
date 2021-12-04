@@ -1,3 +1,4 @@
+//g++ lab7.cpp -lGL -lGLU -lglut -lGLEW -o lab7
 #include <GL/freeglut.h>
 #include <math.h>
 #include <bits/stdc++.h>
@@ -249,10 +250,10 @@ void display(void)
     if (Y_min > Y_max)
         swap(Y_min, Y_max);
 
-    choice = 1; //choice to switch between LBLC and CSLC
+    choice = 0; //choice to switch between LBLC and CSLC
     n = 5;      //No of Lines
 
-    if (choice == 0)
+    if (choice == 1)
     {
         //Randomly generate Lines
         for (int i = 0; i < n; i++)

@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define GLUT
-#define GLUT_KEY
-#define GLUT_SPEC
 #include <GL/glut.h>
 /* end of header files */
 
@@ -25,6 +22,9 @@
 #define DRAW_MECH
 #define DRAW_ENVIRO
 #define MOVE_LIGHT
+#define GLUT
+#define GLUT_KEY
+#define GLUT_SPEC
 /* end of compilation conditions */
 
 #define TEXTID 19
@@ -56,8 +56,7 @@ int shoulder1 = 0, shoulder2 = 0, shoulder3 = 0, shoulder4 = 0, lat1 = 20, lat2 
     heel2 = 0, hip11 = 0, hip12 = 10, hip21 = 0, hip22 = 10, fire = 0, solid_part = 0,
     anim = 0, turn = 0, turn1 = 0, lightturn = 0, lightturn1 = 0;
 
-float elevation = 0.0, distance = 0.0, frame = 3.0
-    /* foot1v[] = {} foot2v[] = {} */;
+float elevation = 0.0, distance = 0.0, frame = 3.0;
 
 /* end of motion variables */
 
@@ -77,20 +76,16 @@ GLfloat mat_specular3[] = {1.0, 1.0, 0.0};
 GLfloat mat_ambient3[] = {1.0, 1.0, 0.0};
 GLfloat mat_diffuse3[] = {1.0, 1.0, 0.0};
 GLfloat mat_shininess3[] = {0.0 * 0.0};
-//to change the plateform color
+//to change the platform color
 GLfloat mat_specular4[] = {0.633, 0.727811, 0.633};
 GLfloat mat_ambient4[] = {0.0215, 0.1745, 0.0215};
 GLfloat mat_diffuse4[] = {0.07568, 0.61424, 0.07568};
 GLfloat mat_shininess4[] = {128 * 0.6};
 
-GLfloat mat_specular5[] =
-    {0.60, 0.60, 0.50};
-GLfloat mat_ambient5[] =
-    {0.0, 0.0, 0.0};
-GLfloat mat_diffuse5[] =
-    {0.5, 0.5, 0.0};
-GLfloat mat_shininess5[] =
-    {128.0 * 0.25};
+GLfloat mat_specular5[] = {0.60, 0.60, 0.50};
+GLfloat mat_ambient5[] = {0.0, 0.0, 0.0};
+GLfloat mat_diffuse5[] = {0.5, 0.5, 0.0};
+GLfloat mat_shininess5[] = {128.0 * 0.25};
 #endif
 /* end of material definitions */
 
@@ -284,8 +279,9 @@ void LightBackwards(void)
 {
     lightturn1 = (lightturn1 - 10) % 360;
 }
-
 /* end of light source position functions */
+
+/* start of Text drawing function */
 void DrawTextXY(double x, double y, double z, double scale, char *s)
 {
     int i;
@@ -297,6 +293,8 @@ void DrawTextXY(double x, double y, double z, double scale, char *s)
         glutStrokeCharacter(GLUT_STROKE_ROMAN, s[i]);
     glPopMatrix();
 }
+/* end of Text drawing function */
+
 /* start of geometric shape functions */
 void Box(float width, float height, float depth, char solid)
 {
@@ -400,35 +398,6 @@ void Octagon(float side, float height, char solid)
     }
 }
 
-/* end of geometric shape functions */
-#ifdef NORM
-void Normalize(float v[3])
-{
-    GLfloat d = sqrt(v[1] * v[1] + v[2] * v[2] + v[3] * v[3]);
-
-    if (d == 0.0)
-    {
-        printf("zero length vector");
-        return;
-    }
-    v[1] /= d;
-    v[2] /= d;
-    v[3] /= d;
-}
-
-void NormXprod(float v1[3], float v2[3], float v[3], float out[3])
-{
-    GLint i, j;
-    GLfloat length;
-
-    out[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    out[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    out[2] = v1[0] * v2[1] - v1[1] * v2[0];
-    Normalize(out);
-}
-
-#endif
-
 void SetMaterial(GLfloat spec[], GLfloat amb[], GLfloat diff[], GLfloat shin[])
 {
 
@@ -444,16 +413,16 @@ void MechTorso(char solid)
 #ifdef LIGHT
     SetMaterial(mat_specular, mat_ambient, mat_diffuse, mat_shininess);
 #endif
-    glColor3f(1.0, 0.0, 0.0); //torso red color
-    Box(1.0, 1.0, 3.0, solid);
+    glColor3f(1.0, 1.0, 0.0); //torso red color
+    Box(2.5, 2.5, 2.0, solid);
     glTranslatef(0.75, 0.0, 0.0);
 #ifdef LIGHT
     SetMaterial(mat_specular2, mat_ambient2, mat_diffuse2, mat_shininess2);
 #endif
     glColor3f(0.0, 0.0, 1.0); //torso blue color
-    Box(0.5, 0.6, 2.0, solid);
+    Box(1.5, 1.2, 1.5, solid);
     glTranslatef(-1.5, 0.0, 0.0);
-    Box(0.5, 0.6, 2.0, solid);
+    Box(1.5, 1.2, 1.5, solid);
     glTranslatef(0.75, 0.0, 0.0);
     glEndList();
 }
@@ -467,7 +436,8 @@ void MechHip(char solid)
     SetMaterial(mat_specular, mat_ambient, mat_diffuse, mat_shininess);
 #endif
     glColor3f(0.0, 1.0, 0.0); //hip lines form green
-    Octagon(0.7, 0.5, solid);
+    glTranslatef(0.0, 0.0, 0.8);
+    Octagon(0.7, 0.8, solid);
 #ifdef SPHERE
     for (i = 0; i < 2; i++)
     {
@@ -485,6 +455,7 @@ void MechHip(char solid)
     }
     glScalef(-1.0, 1.0, 1.0);
 #endif
+    glTranslatef(0, 0, -0.5);
     glEndList();
 }
 
@@ -494,33 +465,32 @@ void Shoulder(char solid)
 #ifdef LIGHT
     SetMaterial(mat_specular, mat_ambient, mat_diffuse, mat_shininess);
 #endif
-    glColor3f(0.0, 1.0, 0.0); //sholder color green
-    Box(1.0, 0.5, 0.5, solid);
+    glColor3f(0.0, 1.0, 0.0); //shoulder color green
+    Box(1.0, 0.75, 0.5, solid);
     glTranslatef(0.9, 0.0, 0.0);
 #ifdef LIGHT
     SetMaterial(mat_specular2, mat_ambient2, mat_diffuse2, mat_shininess2);
 #endif
-    glColor3f(0.0, 1.0, 0.0); // sholder color green
+    glColor3f(0.0, 1.0, 0.0); // shoulder color green
 #ifdef SPHERE
     if (!solid)
         gluQuadricDrawStyle(qobj, GLU_LINE);
-    gluSphere(qobj, 0.6, 16, 16);
+    gluSphere(qobj, 0.5, 16, 16);
 #endif
-    glTranslatef(-0.9, 0.0, 0.0);
+    glTranslatef(-1.0, 0.0, 0.0);
     glEndList();
 }
 
 void UpperArm(char solid)
 {
     int i;
-
     glNewList(SOLID_MECH_UPPER_ARM, GL_COMPILE);
 #ifdef LIGHT
     SetMaterial(mat_specular, mat_ambient, mat_diffuse, mat_shininess);
 #endif
     glColor3f(1.0, 0.0, 0.0); //arm red
-    Box(1.0, 2.0, 1.0, solid);
-    glTranslatef(0.0, -0.95, 0.0);
+    // Box(0.8, 0.5, 1.0, solid);
+    glTranslatef(0.15, 1.0, 0.0);
     glRotatef(90.0, 1.0, 0.0, 0.0);
 #ifdef LIGHT
     SetMaterial(mat_specular2, mat_ambient2, mat_diffuse2, mat_shininess2);
@@ -640,7 +610,7 @@ void UpperLeg(char solid)
     {
         gluQuadricDrawStyle(qobj, GLU_LINE);
     }
-    glTranslatef(0.0, -1.0, 0.0);
+    glTranslatef(0.0, -2.5, 0.0);
     Box(0.4, 1.0, 0.7, solid);
     glTranslatef(0.0, -0.65, 0.0);
     for (i = 0; i < 5; i++)
@@ -662,13 +632,13 @@ void UpperLeg(char solid)
 #ifdef LIGHT
     SetMaterial(mat_specular, mat_ambient, mat_diffuse, mat_shininess);
 #endif
-    glColor3f(0.0, 1.0, 0.0); //above the leg joint n below the fore leg
-    glRotatef(-90.0, 1.0, 0.0, 0.0);
-    glTranslatef(0.0, -1.5, 1.0);
-    Box(1.5, 3.0, 0.5, solid);
-    glTranslatef(0.0, -1.75, -0.8);
-    Box(2.0, 0.5, 2.0, solid);
-    glTranslatef(0.0, -0.9, -0.85);
+    // glColor3f(0.0, 1.0, 0.0); //above the leg joint n below the fore leg
+    // glRotatef(-90.0, 1.0, 0.0, 0.0);
+    // glTranslatef(0.0, -2.5, 1.0);
+    // Box(1.5, 2.0, 0.5, solid);
+    // glTranslatef(0.0, -2.75, -0.8);
+    // Box(2.0, 0.5, 2.0, solid);
+    // glTranslatef(0.0, -0.9, -0.85);
 #ifdef LIGHT
     SetMaterial(mat_specular2, mat_ambient2, mat_diffuse2, mat_shininess2);
 #endif
@@ -804,7 +774,6 @@ void LowerLeg(char solid)
 
 void RocketPod(char solid)
 {
-
     int i, j, k = 0;
 
     glNewList(SOLID_MECH_ROCKET, GL_COMPILE);
@@ -814,7 +783,7 @@ void RocketPod(char solid)
     glColor3f(0.0, 1.0, 0.0); //rocket port color
     glScalef(0.4, 0.4, 0.4);
     glRotatef(45.0, 0.0, 0.0, 1.0);
-    glTranslatef(1.0, 0.0, 0.0);
+    glTranslatef(2.5, 0.0, -0.5);
     Box(2.0, 0.5, 3.0, solid);
     glTranslatef(1.0, 0.0, 0.0);
     glRotatef(45.0, 0.0, 0.0, 1.0);
@@ -852,6 +821,12 @@ void RocketPod(char solid)
             glTranslatef(-i, -j, -0.9);
         }
     }
+    glTranslatef(-3.0, 0.8, -1.25);
+    Octagon(1.5, 1.5, solid);
+    glRotatef(90, 1.0, 0, 0);
+    glTranslatef(0, -0.8, 1.75);
+    gluCylinder(qobj, 0.5, 0.55, 1.0, 16, 10);
+
     glEndList();
 }
 
@@ -862,12 +837,12 @@ void Enviro(char solid)
 
     glNewList(SOLID_ENVIRO, GL_COMPILE);
     SetMaterial(mat_specular4, mat_ambient4, mat_diffuse4, mat_shininess4);
-    glColor3f(1.0, 1.0, 0.0); //out line of the walking path
+    glColor3f(1.0, 1.0, 0.0); //outline of the walking path
     Box(20.0, 0.5, 30.0, solid);
     SetMaterial(mat_specular4, mat_ambient3, mat_diffuse2, mat_shininess);
     glColor3f(1.0, 0.0, 0.0); //the surrounding area color
     glTranslatef(0.0, 0.0, -10.0);
-    for (j = 0; j < 6; j++)
+    for (j = 0; j < 8; j++)
     {
         for (i = 0; i < 2; i++)
         {
@@ -1047,8 +1022,7 @@ void DrawMech(void)
 
 void display(void)
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    //glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glPushMatrix();
@@ -1087,15 +1061,15 @@ void display(void)
 
     glLoadName(TEXTID);
     glColor3f(1, 1, 0);
-    DrawTextXY(-2.5, 0.2, 2.0, 0.0015, rollNo);
-    DrawTextXY(-2.5, 0.5, 2.0, 0.0015, name);
+    DrawTextXY(2.0, 0.2, 2.0, 0.0015, rollNo);
+    DrawTextXY(2.0, 0.5, 2.0, 0.0015, name);
     glFlush();
     glutSwapBuffers();
 }
 
 void myinit(void)
 {
-    char i = 1;
+    int i = 1;
 
     qobj = gluNewQuadric();
 #ifdef LIGHT
@@ -1127,14 +1101,12 @@ void myReshape(int w, int h)
 
 #ifdef ANIMATION
 void animation_walk(void)
-
 {
     float angle;
     static int step;
 
     if (step == 0 || step == 2)
     {
-
         if (frame >= 0.0 && frame <= 21.0)
         {
             if (frame == 0.0)
@@ -1245,16 +1217,13 @@ void animation(void)
 
 #ifdef GLUT
 #ifdef GLUT_KEY
-/* ARGSUSED1 */
 void keyboard(unsigned char key, int x, int y)
 {
-
     int i = 0;
     if (key == 27)
         exit(0);
     switch (key)
-    {
-        /* start arm control functions */
+    { /* start arm control functions */
     case 'q':
     {
         shoulder2Subtract();
@@ -1523,9 +1492,7 @@ void keyboard(unsigned char key, int x, int y)
 /* ARGSUSED1 */
 void special(int key, int x, int y)
 {
-
     int i = 0;
-
     switch (key)
     {
         /* start of view position functions */
@@ -1661,10 +1628,10 @@ void glutMenu(void)
 
     glut_menu[0] = glutCreateMenu(NULL);
     glutAddSubMenu("move the arms.. ", glut_menu[4]);
-    glutAddSubMenu("fire the vulcan guns?", glut_menu[1]);
+    glutAddSubMenu("fire the guns", glut_menu[1]);
     glutAddSubMenu("move the legs.. ", glut_menu[7]);
-    glutAddSubMenu("move the torso?", glut_menu[2]);
-    glutAddSubMenu("move the upper portion?", glut_menu[3]);
+    glutAddSubMenu("move the torso", glut_menu[2]);
+    glutAddSubMenu("move the upper portion.", glut_menu[3]);
     glutAddSubMenu("rotate the scene..", glut_menu[11]);
 #ifdef MOVE_LIGHT
     glutAddSubMenu("rotate the light source..", glut_menu[12]);
@@ -1676,7 +1643,7 @@ void glutMenu(void)
     glutAddMenuEntry("Stop Walk", 2);
 #endif
     glutAddMenuEntry("Toggle Wireframe", 3);
-    glutAddSubMenu("How do I ..", glut_menu[0]);
+    glutAddSubMenu("Keybinds and Controls ..", glut_menu[0]);
     glutAddMenuEntry("Quit", 4);
     glutAttachMenu(GLUT_LEFT_BUTTON);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
@@ -1686,7 +1653,7 @@ int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(1000, 1000);
+    glutInitWindowSize(1500, 1000);
     glutCreateWindow("Robo Cop");
     myinit();
     glutDisplayFunc(display);
